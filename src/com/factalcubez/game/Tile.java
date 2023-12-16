@@ -22,7 +22,7 @@ public class Tile {
         drawImage();
     }
     private void drawImage(){
-        Graphics2D g = (Graphics2D) tileImage.getGraphics();
+        Graphics2D g = (Graphics2D)tileImage.getGraphics();
         if(value == 2){
             background = new Color(0xe9e9e9);
             text = new Color(0x000000);
@@ -67,15 +67,16 @@ public class Tile {
             background = new Color(0xe6daab);
             text = new Color(0xffffff);
         }
-        else
-        {
+        else {
             background = Color.black;
             text = Color.white;
         }
         g.setColor(new Color(0,0,0,0));
         g.fillRect(0,0,WIDTH,HEIGHT);
+
         g.setColor(background);
         g.fillRoundRect(0,0,WIDTH,HEIGHT,ARC_WIDTH,ARC_HEIGHT);
+
         g.setColor(text);
 
         if(value<=64){
@@ -84,9 +85,9 @@ public class Tile {
             font = Game.main;
         }
         g.setFont(font);
-        int drawX = WIDTH/2 - DrawUtils.getMassageWidth(""+value,font,g)/2;
-        int drawY = HEIGHT/2 + DrawUtils.getMessageHeight(""+value,font,g)/2;
-        g.drawString(""+value, drawX, drawY);
+        int drawX = WIDTH/2 - DrawUtils.getMessageHeight(""+ value, font,g)/2;
+        int drawY = HEIGHT/2 + DrawUtils.getMessageHeight(""+ value,font,g)/2;
+        g.drawString(""+ value, drawX, drawY);
         g.dispose();
     }
 

@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 public class DrawUtils {
-    private DrawUtils(){}
+    private DrawUtils(){ }
     public static int getMassageWidth(String message, Font font, Graphics2D g){
         g.setFont(font);
         Rectangle2D bounds = g.getFontMetrics().getStringBounds(message, g);
@@ -13,7 +13,8 @@ public class DrawUtils {
     }
     public static int getMessageHeight(String message, Font font, Graphics2D g){
         g.setFont(font);
-        if(message.length() == 0) return 0;
+        if(message.length()==0)
+            return 0;
         TextLayout tl = new TextLayout(message, font, g.getFontRenderContext());
         return(int) tl.getBounds().getHeight();
     }
