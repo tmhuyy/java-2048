@@ -26,6 +26,7 @@ public class GameBoard {
         board = new Tile[ROWS][COLS];
         gameBoard = new BufferedImage(BOARD_WIDTH,BOARD_HEIGHT,BufferedImage.TYPE_INT_RGB);
         finalBoard = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
         createBoardImage();
     }
     private void createBoardImage(){
@@ -33,12 +34,12 @@ public class GameBoard {
         g.setColor(Color.darkGray);
         g.fillRect(0,0,BOARD_WIDTH,BOARD_HEIGHT);
         g.setColor(Color.lightGray);
-        for(int row = 0; row< ROWS;row ++){
-            for(int col = 0; col < COLS; col++){
-                int x = SPACING +SPACING * col + Tile.WIDTH * col;
-                int y = SPACING + SPACING * row + Tile.HEIGHT * row;
-                g.fillRoundRect(x,y,Tile.WIDTH, Tile.HEIGHT, Tile.ARC_WIDTH,Tile.HEIGHT);
 
+        for(int row = 0; row< ROWS; row++){
+            for(int col = 0; col < COLS; col++){
+                int x = SPACING + SPACING * col + Tile.WIDTH * col;
+                int y = SPACING + SPACING * row + Tile.HEIGHT * row;
+                g.fillRoundRect(x,y,Tile.WIDTH, Tile.HEIGHT, Tile.ARC_WIDTH,Tile.ARC_HEIGHT);
             }
         }
     }
@@ -59,14 +60,16 @@ public class GameBoard {
             if(!hasStarted) hasStarted = true;
         }
         if(Keyboard.typed(KeyEvent.VK_RIGHT)){
+            //move tiles right
             if(!hasStarted) hasStarted =true;
         }
         if(Keyboard.typed(KeyEvent.VK_UP)){
+            //move tiles up
             if(!hasStarted) hasStarted= true;
         }
         if(Keyboard.typed(KeyEvent.VK_DOWN)){
+            //move tiles down
             if(!hasStarted) hasStarted = true;
         }
     }
-
 }

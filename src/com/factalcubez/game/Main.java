@@ -2,7 +2,7 @@ package com.factalcubez.game;
 import javax.swing.JFrame;
 
     public class Main {
-        public void main(String[] args) {
+        public static void main(String[] args) {
             Game game = new Game();
             JFrame window = new JFrame("2048");
             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
