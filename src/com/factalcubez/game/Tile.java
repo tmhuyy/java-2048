@@ -21,76 +21,80 @@ public class Tile {
         tileImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         drawImage();
     }
-    private void drawImage(){
-        Graphics2D g = (Graphics2D)tileImage.getGraphics();
-        if(value == 2){
+
+    private void drawImage() {
+        Graphics2D g = (Graphics2D) tileImage.getGraphics();
+        if (value == 2) {
             background = new Color(0xe9e9e9);
             text = new Color(0x000000);
-        }
-        else if (value == 4) {
+        } else if (value == 4) {
             background = new Color(0xe6daab);
             text = new Color(0x000000);
-        }
-        else if (value == 8) {
+        } else if (value == 8) {
             background = new Color(0xf79d3d);
             text = new Color(0xffffff);
-        }
-        else if (value == 16) {
+        } else if (value == 16) {
             background = new Color(0xf28007);
             text = new Color(0xffffff);
-        }
-        else if (value == 32) {
+        } else if (value == 32) {
             background = new Color(0xf55e3b);
             text = new Color(0xffffff);
-        }
-        else if (value == 64) {
+        } else if (value == 64) {
             background = new Color(0xff0000);
             text = new Color(0xffffff);
-        }
-        else if (value == 128) {
+        } else if (value == 128) {
             background = new Color(0xe9de84);
             text = new Color(0xffffff);
-        }
-        else if (value == 256) {
+        } else if (value == 256) {
             background = new Color(0xf6e873);
             text = new Color(0xffffff);
-        }
-        else if (value == 512) {
+        } else if (value == 512) {
             background = new Color(0xf7e12c);
             text = new Color(0xffffff);
-        }
-        else if (value == 1024) {
+        } else if (value == 1024) {
             background = new Color(0xffe400);
             text = new Color(0xffffff);
-        }
-        else if (value == 2048) {
+        } else if (value == 2048) {
             background = new Color(0xe6daab);
             text = new Color(0xffffff);
-        }
-        else {
+        } else {
             background = Color.black;
             text = Color.white;
         }
-        g.setColor(new Color(0,0,0,0));
-        g.fillRect(0,0,WIDTH,HEIGHT);
+        g.setColor(new Color(0, 0, 0, 0));
+        g.fillRect(0, 0, WIDTH, HEIGHT);
 
         g.setColor(background);
-        g.fillRoundRect(0,0,WIDTH,HEIGHT,ARC_WIDTH,ARC_HEIGHT);
+        g.fillRoundRect(0, 0, WIDTH, HEIGHT, ARC_WIDTH, ARC_HEIGHT);
 
         g.setColor(text);
 
-        if(value<=64){
+        if (value <= 64) {
             font = Game.main.deriveFont(36f);
-        }else{
+        } else {
             font = Game.main;
         }
         g.setFont(font);
-        int drawX = WIDTH/2 - DrawUtils.getMessageHeight(""+ value, font,g)/2;
-        int drawY = HEIGHT/2 + DrawUtils.getMessageHeight(""+ value,font,g)/2;
-        g.drawString(""+ value, drawX, drawY);
+        int drawX = WIDTH / 2 - DrawUtils.getMessageHeight("" + value, font, g) / 2;
+        int drawY = HEIGHT / 2 + DrawUtils.getMessageHeight("" + value, font, g) / 2;
+        g.drawString("" + value, drawX, drawY);
         g.dispose();
     }
+    
+    public void update()
+    {
 
+    }
 
+    public void render(Graphics2D g)
+    {
+        g.drawImage(tileImage, x, y, null);
 
+    }
+
+    public int getValue()
+    {
+        return value;
+        
+    }
 }
