@@ -27,12 +27,6 @@ public class Game extends JPanel implements KeyListener,Runnable {
         board = new GameBoard(WIDTH / 2-GameBoard.BOARD_WIDTH/2, HEIGHT- GameBoard.BOARD_HEIGHT - 10);
     }
     private void update(){
-        if(Keyboard.pressed[KeyEvent.VK_SPACE]){
-            System.out.println("hit space");
-        }
-        if(Keyboard.typed(KeyEvent.VK_RIGHT)){
-            System.out.println("hit right");
-        }
         board.update();
         Keyboard.update();
     }
