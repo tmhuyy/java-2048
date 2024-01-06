@@ -465,6 +465,8 @@ public class GameBoard {
 
 		if(Keyboard.typed(KeyEvent.VK_SPACE)){
 			reset();
+			// fix bug: https://github.com/tmhuyy/java-2048/issues/6
+			setInitalScore();
 		}
 	}
 
@@ -479,5 +481,10 @@ public class GameBoard {
 			}
 		}
 		undoStack.push(currentState);
+	}
+	// fix bug: https://github.com/tmhuyy/java-2048/issues/6
+	public void setInitalScore() 
+	{
+		this.score = 0;
 	}
 }
