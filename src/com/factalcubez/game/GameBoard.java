@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Random;
+import java.util.Stack;
+
 
 import javax.sound.sampled.Clip;
 
@@ -20,6 +22,8 @@ public class GameBoard {
 
 	private final int startingTiles = 2;
 	private Tile[][] board;
+	private Stack<Tile[][]> undoStack;
+
 	private boolean dead;
 	private boolean won;
 	private BufferedImage gameBoard;
@@ -59,6 +63,8 @@ public class GameBoard {
 		board = new Tile[ROWS][COLS];
 		gameBoard = new BufferedImage(BOARD_WIDTH,BOARD_HEIGHT,BufferedImage.TYPE_INT_RGB);
         finalBoard = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		undoStack = new Stack<Tile[][]>();
+
 
 		loadHighScore();
 
@@ -420,29 +426,58 @@ public class GameBoard {
 	private void checkKeys() {
 		if(Keyboard.typed(KeyEvent.VK_LEFT)){
             //move tiles left
+			saveState();
             moveTiles(Direction.LEFT);
 
             if(!hasStarted) hasStarted = true;
         }
         if(Keyboard.typed(KeyEvent.VK_RIGHT)){
             //move tiles right
-            moveTiles(Direction.RIGHT);
+			saveState();
+
+			moveTiles(Direction.RIGHT);
 
             if(!hasStarted) hasStarted =true;
         }
         if(Keyboard.typed(KeyEvent.VK_UP)){
             //move tiles up
-            moveTiles(Direction.UP);
+			saveState();
+
+			moveTiles(Direction.UP);
 
             if(!hasStarted) hasStarted= true;
         }
 		if(Keyboard.typed(KeyEvent.VK_DOWN)){
             //move tiles down
-            moveTiles(Direction.DOWN);
+			saveState();
+
+			moveTiles(Direction.DOWN);
 
             if(!hasStarted) hasStarted = true;
 		}
+
+		if(Keyboard.typed(KeyEvent.VK_U)){
+			if(!undoStack.isEmpty()) {
+				System.out.println("U is pressed");
+				board = undoStack.pop();
+			}
+		}
+
+		if(Keyboard.typed(KeyEvent.VK_SPACE)){
+			reset();
+		}
 	}
-	
-	
+
+
+	private void saveState() {
+		Tile[][] currentState = new Tile[4][4];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (board[i][j] != null) {
+					currentState[i][j] = new Tile(board[i][j].getValue(), board[i][j].getX(), board[i][j].getY());
+				}
+			}
+		}
+		undoStack.push(currentState);
+	}
 }
