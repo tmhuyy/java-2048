@@ -31,6 +31,7 @@ public class GameBoard {
 	private int x;
 	private int y;
 	private int score= 0;
+	private int scoreInCurrentStep= 0;
 	private int highScore= 0;
 	private Font scoreFont;
 
@@ -296,7 +297,7 @@ public class GameBoard {
 				board[newRow][newCol].setCanCombine(true);
 //				board[newRow][newCol].setCombineAnimation(true);
 				score+=board[newRow][newCol].getValue();
-				
+				scoreInCurrentStep = board[newRow][newCol].getValue();
 			}
 			else {
 				move = false;
@@ -460,13 +461,14 @@ public class GameBoard {
 			if(!undoStack.isEmpty()) {
 				System.out.println("U is pressed");
 				board = undoStack.pop();
+				setCurrentScore(this.scoreInCurrentStep);
 			}
 		}
 
 		if(Keyboard.typed(KeyEvent.VK_SPACE)){
 			reset();
 			// fix bug: https://github.com/tmhuyy/java-2048/issues/6
-			setInitalScore();
+			setCurrentScore(0);
 		}
 	}
 
@@ -483,8 +485,10 @@ public class GameBoard {
 		undoStack.push(currentState);
 	}
 	// fix bug: https://github.com/tmhuyy/java-2048/issues/6
-	public void setInitalScore() 
+	public void setCurrentScore(int score) 
 	{
-		this.score = 0;
+		this.score = this.score - score;
 	}
+
+	
 }
