@@ -1,9 +1,9 @@
 package com.factalcubez.game;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.Random;
 
 import javax.sound.sampled.Clip;
@@ -26,6 +26,9 @@ public class GameBoard {
     private BufferedImage finalBoard;
 	private int x;
 	private int y;
+	private int score= 0;
+	private int highScore= 0;
+	private Font scoreFont;
 
 	private static int SPACING = 10;
 	public static int BOARD_WIDTH = (COLS + 1) * SPACING + COLS * Tile.WIDTH;
@@ -35,20 +38,81 @@ public class GameBoard {
 	private long startTime;
 	private boolean hasStarted;
 
+	//saving
+	private String	saveDataPath;
+	private String fileName="SaveData";
+
 	
 	private int saveCount = 0;
 
 	public GameBoard(int x, int y) {
+		try {
+			saveDataPath=GameBoard.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		scoreFont= Game.main.deriveFont(24f);
 		this.x = x;
 		this.y = y;
 		board = new Tile[ROWS][COLS];
 		gameBoard = new BufferedImage(BOARD_WIDTH,BOARD_HEIGHT,BufferedImage.TYPE_INT_RGB);
         finalBoard = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
+		loadHighScore();
+
 		createBoardImage();
 
         start();
 	}
+
+	private void createSaveData(){
+		try {
+			File file =new File(saveDataPath, fileName);
+			FileWriter output= new FileWriter(file);
+			BufferedWriter writer = new BufferedWriter(output);
+			writer.write(""+0);
+			//create fastest time
+			writer.close();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	private  void loadHighScore(){
+	try {
+		File f = new File(saveDataPath, fileName);
+		if (!f.isFile()){
+			createSaveData();
+		}
+		BufferedReader reader= new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+		highScore=Integer.parseInt(reader.readLine());
+		//read fastest time
+		reader.close();
+	}
+	catch (Exception e){
+		e.printStackTrace();
+	}
+	}
+	private  void setHighScore(){
+		FileWriter output=null;
+
+		try {
+			File f = new File(saveDataPath,fileName);
+			output= new FileWriter(f);
+			BufferedWriter writer = new BufferedWriter(output);
+
+			writer.write((""+highScore));
+			writer.newLine();
+			writer.close();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
 
 	public void reset(){
 		board = new Tile[ROWS][COLS];
@@ -99,14 +163,21 @@ public class GameBoard {
 
 		checkKeys();
 
+		if (score>highScore){
+			highScore=score;
+		}
 		
-
+		//check WIN
 		for (int row = 0; row < ROWS; row++) {
 			for (int col = 0; col < COLS; col++) {
 				Tile current = board[row][col];
 				if (current == null) continue;
 				current.update();
 				resetPosition(current, row, col);
+				//tHuy edit
+				if (current.getValue()==2048){
+					won=true;
+				}
 			}
 		}
 	}
@@ -128,6 +199,12 @@ public class GameBoard {
 
 		g.drawImage(finalBoard, x, y, null);
 		g2d.dispose();
+
+		g.setColor(Color.lightGray);
+		g.setFont(scoreFont);
+		g.drawString(""+score,30,40);
+		g.setColor(Color.red);
+		g.drawString("Best: "+highScore,Game.WIDTH - DrawUtils.getMessageWidth("Best: "+highScore, scoreFont,g)-20, 40);
 
 		
 	}
@@ -210,6 +287,9 @@ public class GameBoard {
 				canMove = true;
 				board[newRow - verticalDirection][newCol - horizontalDirection] = null;
 				board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
+				board[newRow][newCol].setCanCombine(true);
+//				board[newRow][newCol].setCombineAnimation(true);
+				score+=board[newRow][newCol].getValue();
 				
 			}
 			else {
@@ -280,6 +360,20 @@ public class GameBoard {
 			spawnRandom();
 		}
 	}
+	private void checkDead(){
+		for (int row = 0; row<ROWS;row++){
+			for (int col = 0; col< COLS; col++){
+				if (board[row][col]==null)return;
+				if (checkSurroundingTiles(row,col,board[row][col])){
+					return;
+				}
+			}
+		}
+		dead=true;
+		setHighScore();
+	}
+
+
 
 	private boolean checkSurroundingTiles(int row, int col, Tile tile) {
 		if (row > 0) {
