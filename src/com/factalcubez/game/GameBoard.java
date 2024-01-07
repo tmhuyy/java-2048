@@ -7,9 +7,6 @@ import java.io.*;
 import java.util.Random;
 import java.util.Stack;
 
-
-import javax.sound.sampled.Clip;
-
 public class GameBoard {
 
 	public static final int LEFT = 0;
@@ -23,6 +20,7 @@ public class GameBoard {
 	private final int startingTiles = 2;
 	private Tile[][] board;
 	private Stack<Tile[][]> undoStack;
+	private Stack<Integer> scoreStack;
 
 	private boolean dead;
 	private boolean won;
@@ -65,7 +63,7 @@ public class GameBoard {
 		gameBoard = new BufferedImage(BOARD_WIDTH,BOARD_HEIGHT,BufferedImage.TYPE_INT_RGB);
         finalBoard = new BufferedImage(BOARD_WIDTH, BOARD_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		undoStack = new Stack<Tile[][]>();
-
+		scoreStack = new Stack<Integer>();
 
 		loadHighScore();
 
@@ -459,16 +457,18 @@ public class GameBoard {
 
 		if(Keyboard.typed(KeyEvent.VK_U)){
 			if(!undoStack.isEmpty()) {
-				System.out.println("U is pressed");
 				board = undoStack.pop();
-				setCurrentScore(this.scoreInCurrentStep);
 			}
+			if(!scoreStack.isEmpty()) {
+				setScore(scoreStack.pop());
+			}
+			System.out.println(getScore());
 		}
 
 		if(Keyboard.typed(KeyEvent.VK_SPACE)){
 			reset();
 			// fix bug: https://github.com/tmhuyy/java-2048/issues/6
-			setCurrentScore(0);
+			setScore(0);
 		}
 	}
 
@@ -482,13 +482,16 @@ public class GameBoard {
 				}
 			}
 		}
+		scoreStack.push(getScore());
 		undoStack.push(currentState);
 	}
 	// fix bug: https://github.com/tmhuyy/java-2048/issues/6
-	public void setCurrentScore(int score) 
+	public void setScore(int score)
 	{
-		this.score = this.score - score;
+		this.score = score;
 	}
 
-	
+	public int getScore(){
+		return this.score;
+	}
 }
