@@ -19,6 +19,7 @@ public class GameBoard {
 
 	private final int startingTiles = 2;
 	private Tile[][] board;
+	// state
 	private Stack<Tile[][]> undoStack;
 	private Stack<Integer> scoreStack;
 
@@ -286,6 +287,7 @@ public class GameBoard {
 				board[newRow - verticalDirection][newCol - horizontalDirection] = null;
 				board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
 			}
+			//4 + 8 = 12
 			else if (board[newRow][newCol].getValue() == current.getValue() && board[newRow][newCol].canCombine()) {
 				board[newRow][newCol].setCanCombine(false);
 				board[newRow][newCol].setValue(board[newRow][newCol].getValue() * 2);
@@ -403,7 +405,6 @@ public class GameBoard {
 		}
 		return false;
 	}
-
 	private void spawnRandom() {
 		Random random = new Random();
 		boolean notValid = true;
@@ -423,50 +424,50 @@ public class GameBoard {
 	}
 
 	private void checkKeys() {
-		if(Keyboard.typed(KeyEvent.VK_LEFT)){
-            //move tiles left
+		// left keypress
+		if (Keyboard.typed(KeyEvent.VK_LEFT)) {
 			saveState();
-            moveTiles(Direction.LEFT);
+			moveTiles(Direction.LEFT);
 
-            if(!hasStarted) hasStarted = true;
-        }
-        if(Keyboard.typed(KeyEvent.VK_RIGHT)){
-            //move tiles right
+			if (!hasStarted)
+				hasStarted = true;
+		}
+		// right keypress
+		if (Keyboard.typed(KeyEvent.VK_RIGHT)) {
 			saveState();
-
 			moveTiles(Direction.RIGHT);
 
-            if(!hasStarted) hasStarted =true;
-        }
-        if(Keyboard.typed(KeyEvent.VK_UP)){
-            //move tiles up
+			if (!hasStarted)
+				hasStarted = true;
+		}
+		// up keypress
+		if (Keyboard.typed(KeyEvent.VK_UP)) {
 			saveState();
-
 			moveTiles(Direction.UP);
 
-            if(!hasStarted) hasStarted= true;
-        }
+			if (!hasStarted)
+				hasStarted = true;
+		}
+		// down keypress
 		if(Keyboard.typed(KeyEvent.VK_DOWN)){
-            //move tiles down
 			saveState();
-
 			moveTiles(Direction.DOWN);
 
             if(!hasStarted) hasStarted = true;
 		}
-
+		// U keypress
 		if(Keyboard.typed(KeyEvent.VK_U)){
 			if(!undoStack.isEmpty()) {
 				board = undoStack.pop();
 			}
 			if(!scoreStack.isEmpty()) {
-				setScore(scoreStack.pop());
+				setScore(scoreStack.pop()); 
 			}
-			System.out.println(getScore());
+			System.out.println(getCurrentScore());
 		}
-
-		if(Keyboard.typed(KeyEvent.VK_SPACE)){
-			reset();
+		// space keypress
+		if(Keyboard.typed(KeyEvent.VK_SPACE)){ 
+			reset(); 
 			// fix bug: https://github.com/tmhuyy/java-2048/issues/6
 			setScore(0);
 		}
@@ -482,7 +483,11 @@ public class GameBoard {
 				}
 			}
 		}
-		scoreStack.push(getScore());
+		// 12
+		
+		// 2 2 -> 4 -> total score : 16 
+		// [12, 4]
+		scoreStack.push(getCurrentScore()); // score in current step
 		undoStack.push(currentState);
 	}
 	// fix bug: https://github.com/tmhuyy/java-2048/issues/6
@@ -491,7 +496,7 @@ public class GameBoard {
 		this.score = score;
 	}
 
-	public int getScore(){
+	public int getCurrentScore(){
 		return this.score;
 	}
 }
